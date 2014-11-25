@@ -214,7 +214,11 @@ class socksocket(socket.socket):
             if self.__proxy[3]:
                 # Resolve remotely
                 ipaddr = None
-                req = req + chr(0x03).encode() + chr(len(destaddr)).encode() + destaddr.encode()
+                if type(destaddr) != type(b''): # python3
+                    destaddr_bytes = destaddr.encode(encoding='idna')
+                else:
+                    destaddr_bytes = destaddr
+                req = req + chr(0x03).encode() + chr(len(destaddr_bytes)).encode() + destaddr_bytes
             else:
                 # Resolve locally
                 ipaddr = socket.inet_aton(socket.gethostbyname(destaddr))
